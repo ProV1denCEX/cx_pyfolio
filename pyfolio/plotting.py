@@ -79,8 +79,8 @@ def plotting_context(context="notebook", font_scale=1.5, rc=None):
 
     Example
     -------
-    >>> with pyfolio.plotting.plotting_context(font_scale=2):
-    >>>    pyfolio.create_full_tear_sheet(..., set_context=False)
+     with pyfolio.plotting.plotting_context(font_scale=2):
+        pyfolio.create_full_tear_sheet(..., set_context=False)
 
     See also
     --------
@@ -119,8 +119,8 @@ def axes_style(style="darkgrid", rc=None):
 
     Example
     -------
-    >>> with pyfolio.plotting.axes_style(style='whitegrid'):
-    >>>    pyfolio.create_full_tear_sheet(..., set_context=False)
+    with pyfolio.plotting.axes_style(style='whitegrid'):
+        pyfolio.create_full_tear_sheet(..., set_context=False)
 
     See also
     --------
