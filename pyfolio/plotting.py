@@ -444,9 +444,15 @@ def plot_drawdown_periods(returns, top=10, ax=None, **kwargs):
     ].iterrows():
         if pd.isnull(recovery):
             recovery = returns.index[-1]
-        ax.fill_between(
-            (peak, recovery), lim[0], lim[1], alpha=0.4, color=colors[i]
-        )
+
+        if pd.isnull(peak):
+            peak = returns.index[0]
+
+        ax.fill_between((peak, recovery),
+                        lim[0],
+                        lim[1],
+                        alpha=.4,
+                        color=colors[i])
     ax.set_ylim(lim)
     ax.set_title("Top %i drawdown periods" % len(df_drawdowns))
     ax.set_ylabel("Cumulative returns")
@@ -677,7 +683,7 @@ def show_perf_stats(
         header_rows = OrderedDict(header_rows)
         header_rows.update(date_rows)
 
-    utils.print_table(
+    return utils.print_table(
         perf_stats,
         float_format="{0:.2f}".format,
         header_rows=header_rows,
@@ -1808,10 +1814,10 @@ def show_worst_drawdown_periods(returns, top=5):
     """
 
     drawdown_df = timeseries.gen_drawdown_table(returns, top=top)
-    utils.print_table(
-        drawdown_df.sort_values("Net drawdown in %", ascending=False),
-        name="Worst drawdown periods",
-        float_format="{0:.2f}".format,
+    return utils.print_table(
+        drawdown_df.sort_values('Net drawdown in %', ascending=False),
+        name='Worst drawdown periods',
+        float_format='{0:.2f}'.format,
     )
 
 
@@ -1952,7 +1958,7 @@ def show_profit_attribution(round_trips):
     pnl_attribution.name = ""
 
     pnl_attribution.index = pnl_attribution.index.map(utils.format_asset)
-    utils.print_table(
+    return utils.print_table(
         pnl_attribution.sort_values(
             inplace=False,
             ascending=False,

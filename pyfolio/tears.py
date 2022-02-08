@@ -510,18 +510,18 @@ def create_returns_tear_sheet(
     if benchmark_rets is not None:
         returns = utils.clip_returns_to_benchmark(returns, benchmark_rets)
 
-    plotting.show_perf_stats(
-        returns,
-        benchmark_rets,
-        positions=positions,
-        transactions=transactions,
-        turnover_denom=turnover_denom,
-        bootstrap=bootstrap,
-        live_start_date=live_start_date,
-        header_rows=header_rows,
-    )
+    perf_stats = plotting.show_perf_stats(returns, benchmark_rets,
+                                          positions=positions,
+                                          transactions=transactions,
+                                          turnover_denom=turnover_denom,
+                                          bootstrap=bootstrap,
+                                          live_start_date=live_start_date,
+                                          header_rows=header_rows)
 
-    plotting.show_worst_drawdown_periods(returns)
+    worst_drawdown_periods = plotting.show_worst_drawdown_periods(returns)
+
+    if not return_fig:
+        return None, perf_stats, worst_drawdown_periods
 
     vertical_sections = 11
 
@@ -642,8 +642,7 @@ def create_returns_tear_sheet(
             labelbottom=True,
         )
 
-    if return_fig:
-        return fig
+    return fig, perf_stats, worst_drawdown_periods
 
 
 @plotting.customize
@@ -1017,8 +1016,18 @@ def create_interesting_times_tear_sheet(
         returns = utils.clip_returns_to_benchmark(returns, benchmark_rets)
 
         bmark_interesting = timeseries.extract_interesting_date_ranges(
-            benchmark_rets, periods
-        )
+            benchmark_rets, periods)
+
+    stats_interesting = []
+    for k, v in rets_interesting.items():
+        perf_stats = plotting.show_perf_stats(v, bmark_interesting[k])
+        perf_stats.columns = [k]
+        stats_interesting.append(perf_stats)
+
+    stats_interesting = pd.concat(stats_interesting, axis=1)
+
+    if not return_fig:
+        return None, stats_interesting
 
     num_plots = len(rets_interesting)
     # 2 plots, 1 row; 3 plots, 2 rows; 4 plots, 2 rows; etc.
@@ -1051,8 +1060,7 @@ def create_interesting_times_tear_sheet(
         ax.set_ylabel("Returns")
         ax.set_xlabel("")
 
-    if return_fig:
-        return fig
+    return fig, stats_interesting
 
 
 @plotting.customize

@@ -204,6 +204,8 @@ def print_table(
     if name is not None:
         table.columns.name = name
 
+    return table
+
     html = table.to_html(float_format=float_format, formatters=formatters)
 
     if header_rows is not None:
