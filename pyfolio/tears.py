@@ -1018,6 +1018,9 @@ def create_interesting_times_tear_sheet(
         bmark_interesting = timeseries.extract_interesting_date_ranges(
             benchmark_rets, periods)
 
+    else:
+        bmark_interesting = {k: None for k in rets_interesting}
+
     stats_interesting = []
     for k, v in rets_interesting.items():
         perf_stats = plotting.show_perf_stats(v, bmark_interesting[k])
