@@ -255,16 +255,9 @@ def cum_returns(returns, starting_value=0, out=None):
         returns[nanmask] = 0
 
     allocated_output = out is None
-    if allocated_output:
-        out = np.empty_like(returns)
-
-    np.add(returns, 1, out=out)
-    out.cumprod(axis=0, out=out)
-
-    if starting_value == 0:
-        np.subtract(out, 1, out=out)
-    else:
-        np.multiply(out, starting_value, out=out)
+    out = np.cumsum(returns)
+    if starting_value:
+        out = (out + 1) * starting_value
 
     if allocated_output:
         if returns.ndim == 1 and isinstance(returns, pd.Series):
@@ -301,14 +294,11 @@ def cum_returns_final(returns, starting_value=0):
         return np.nan
 
     if isinstance(returns, pd.DataFrame):
-        result = (returns + 1).prod()
+        result = returns.sum()
     else:
-        result = np.nanprod(returns + 1, axis=0)
+        result = np.nansum(returns, axis=0)
 
-    if starting_value == 0:
-        result -= 1
-    else:
-        result *= starting_value
+    result += starting_value
 
     return result
 

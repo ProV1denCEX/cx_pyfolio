@@ -1,14 +1,14 @@
-from datetime import datetime
+import errno
+import warnings
 from functools import wraps
 from os import makedirs, environ
 from os.path import expanduser, join, getmtime, isdir
-import errno
-import warnings
 
 import numpy as np
-from numpy.lib.stride_tricks import as_strided
 import pandas as pd
+from numpy.lib.stride_tricks import as_strided
 from pandas.tseries.offsets import BDay
+
 try:
     from pandas_datareader import data as web
 except ImportError:
@@ -16,18 +16,11 @@ except ImportError:
            "continuing. All data reading functionality will raise errors; but "
            "has been deprecated and will be removed in a later version.")
     warnings.warn(msg)
-from .deprecate import deprecated
 
-DATAREADER_DEPRECATION_WARNING = \
-        ("Yahoo and Google Finance have suffered large API breaks with no "
-         "stable replacement. As a result, any data reading functionality "
-         "in empyrical has been deprecated and will be removed in a future "
-         "version. See README.md for more details: "
-         "\n\n"
-         "\thttps://github.com/quantopian/pyfolio/blob/master/README.md")
 try:
     # fast versions
     import bottleneck as bn
+
 
     def _wrap_function(f):
         @wraps(f)
@@ -42,6 +35,7 @@ try:
             return out
 
         return wrapped
+
 
     nanmean = _wrap_function(bn.nanmean)
     nanstd = _wrap_function(bn.nanstd)
@@ -159,7 +153,7 @@ def down(returns, factor_returns, **kwargs):
 def _roll_ndarray(func, window, *args, **kwargs):
     data = []
     for i in range(window, len(args[0]) + 1):
-        rets = [s[i-window:i] for s in args]
+        rets = [s[i - window:i] for s in args]
         data.append(func(*rets, **kwargs))
     return np.array(data)
 
@@ -168,14 +162,13 @@ def _roll_pandas(func, window, *args, **kwargs):
     data = {}
     index_values = []
     for i in range(window, len(args[0]) + 1):
-        rets = [s.iloc[i-window:i] for s in args]
+        rets = [s.iloc[i - window:i] for s in args]
         index_value = args[0].index[i - 1]
         index_values.append(index_value)
         data[index_value] = func(*rets, **kwargs)
     return pd.Series(data, index=type(args[0].index)(index_values))
 
 
-@deprecated(msg=DATAREADER_DEPRECATION_WARNING)
 def cache_dir(environ=environ):
     try:
         return environ['EMPYRICAL_CACHE_DIR']
@@ -190,12 +183,10 @@ def cache_dir(environ=environ):
         )
 
 
-@deprecated(msg=DATAREADER_DEPRECATION_WARNING)
 def data_path(name):
     return join(cache_dir(), name)
 
 
-@deprecated(msg=DATAREADER_DEPRECATION_WARNING)
 def ensure_directory(path):
     """
     Ensure that a directory named "path" exists.
@@ -239,7 +230,6 @@ def _1_bday_ago():
     return pd.Timestamp.now().normalize() - _1_bday
 
 
-@deprecated(msg=DATAREADER_DEPRECATION_WARNING)
 def get_fama_french():
     """
     Retrieve Fama-French factors via pandas-datareader
@@ -263,7 +253,6 @@ def get_fama_french():
     return five_factors
 
 
-@deprecated(msg=DATAREADER_DEPRECATION_WARNING)
 def get_returns_cached(filepath, update_func, latest_dt, **kwargs):
     """
     Get returns from a cached file if the cache is recent enough,
@@ -331,7 +320,6 @@ def get_returns_cached(filepath, update_func, latest_dt, **kwargs):
     return returns
 
 
-@deprecated(msg=DATAREADER_DEPRECATION_WARNING)
 def load_portfolio_risk_factors(filepath_prefix=None, start=None, end=None):
     """
     Load risk factors Mkt-Rf, SMB, HML, Rf, and UMD.
@@ -361,7 +349,6 @@ def load_portfolio_risk_factors(filepath_prefix=None, start=None, end=None):
     return five_factors.loc[start:end]
 
 
-@deprecated(msg=DATAREADER_DEPRECATION_WARNING)
 def get_treasury_yield(start=None, end=None, period='3MO'):
     """
     Load treasury yields from FRED.
@@ -393,92 +380,6 @@ def get_treasury_yield(start=None, end=None, period='3MO'):
     treasury = treasury.ffill()
 
     return treasury
-
-
-@deprecated(msg=DATAREADER_DEPRECATION_WARNING)
-def get_symbol_returns_from_yahoo(symbol, start=None, end=None):
-    """
-    Wrapper for pandas.io.data.get_data_yahoo().
-    Retrieves prices for symbol from yahoo and computes returns
-    based on adjusted closing prices.
-
-    Parameters
-    ----------
-    symbol : str
-        Symbol name to load, e.g. 'SPY'
-    start : pandas.Timestamp compatible, optional
-        Start date of time period to retrieve
-    end : pandas.Timestamp compatible, optional
-        End date of time period to retrieve
-
-    Returns
-    -------
-    pandas.DataFrame
-        Returns of symbol in requested period.
-    """
-
-    try:
-        px = web.get_data_yahoo(symbol, start=start, end=end)
-        px['date'] = pd.to_datetime(px['date'])
-        px.set_index('date', drop=False, inplace=True)
-        rets = px[['adjclose']].pct_change().dropna()
-    except Exception as e:
-        warnings.warn(
-            'Yahoo Finance read failed: {}, falling back to Google'.format(e),
-            UserWarning)
-        px = web.get_data_google(symbol, start=start, end=end)
-        rets = px[['Close']].pct_change().dropna()
-
-    rets.index = rets.index.tz_localize("UTC")
-    rets.columns = [symbol]
-    return rets
-
-
-@deprecated(msg=DATAREADER_DEPRECATION_WARNING)
-def default_returns_func(symbol, start=None, end=None):
-    """
-    Gets returns for a symbol.
-    Queries Yahoo Finance. Attempts to cache SPY.
-
-    Parameters
-    ----------
-    symbol : str
-        Ticker symbol, e.g. APPL.
-    start : date, optional
-        Earliest date to fetch data for.
-        Defaults to earliest date available.
-    end : date, optional
-        Latest date to fetch data for.
-        Defaults to latest date available.
-
-    Returns
-    -------
-    pd.Series
-        Daily returns for the symbol.
-         - See full explanation in tears.create_full_tear_sheet (returns).
-    """
-
-    if start is None:
-        start = '1/1/1970'
-    if end is None:
-        end = _1_bday_ago()
-
-    start = get_utc_timestamp(start)
-    end = get_utc_timestamp(end)
-
-    if symbol == 'SPY':
-        filepath = data_path('spy.csv')
-        rets = get_returns_cached(filepath,
-                                  get_symbol_returns_from_yahoo,
-                                  end,
-                                  symbol='SPY',
-                                  start='1/1/1970',
-                                  end=datetime.now())
-        rets = rets[start:end]
-    else:
-        rets = get_symbol_returns_from_yahoo(symbol, start=start, end=end)
-
-    return rets[symbol]
 
 
 def rolling_window(array, length, mutable=False):
