@@ -544,6 +544,17 @@ STAT_FUNCS_PCT = [
 ]
 
 
+def to_str_pct(perf_stats):
+    for column in perf_stats.columns:
+        for stat, value in perf_stats[column].iteritems():
+            if stat in STAT_FUNCS_PCT:
+                perf_stats.loc[stat, column] = (
+                        str(np.round(value * 100, 3)) + "%"
+                )
+
+    return perf_stats
+
+
 def show_perf_stats(
     returns,
     factor_returns=None,
@@ -671,12 +682,6 @@ def show_perf_stats(
             )
         perf_stats = pd.DataFrame(perf_stats_all, columns=["Backtest"])
 
-    for column in perf_stats.columns:
-        for stat, value in perf_stats[column].iteritems():
-            if stat in STAT_FUNCS_PCT:
-                perf_stats.loc[stat, column] = (
-                    str(np.round(value * 100, 3)) + "%"
-                )
     if header_rows is None:
         header_rows = date_rows
     else:
