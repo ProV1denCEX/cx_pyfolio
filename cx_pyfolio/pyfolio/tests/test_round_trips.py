@@ -15,7 +15,7 @@ from pandas.testing import assert_frame_equal
 import os
 import gzip
 
-from pyfolio.round_trips import (
+from cx_pyfolio.pyfolio.round_trips import (
     extract_round_trips,
     add_closing_transactions,
     _groupby_consecutive,

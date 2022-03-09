@@ -16,7 +16,7 @@ import datetime
 from collections import OrderedDict
 from functools import wraps
 
-import empyrical as ep
+from .. import empyrical as ep
 import matplotlib
 import matplotlib.patches as patches
 import matplotlib.pyplot as plt

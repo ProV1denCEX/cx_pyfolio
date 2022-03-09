@@ -1,4 +1,4 @@
-import empyrical as ep
+from .. import empyrical as ep
 import numpy as np
 import pandas as pd
 

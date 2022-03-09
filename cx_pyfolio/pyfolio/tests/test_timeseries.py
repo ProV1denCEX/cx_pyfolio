@@ -7,7 +7,7 @@ import numpy as np
 import pandas as pd
 
 from .. import timeseries
-from pyfolio.utils import to_utc, to_series, pandas_one_point_one_or_less
+from cx_pyfolio.pyfolio.utils import to_utc, to_series, pandas_one_point_one_or_less
 
 import gzip
 

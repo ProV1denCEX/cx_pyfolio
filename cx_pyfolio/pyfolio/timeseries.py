@@ -1,18 +1,16 @@
 from collections import OrderedDict
 from functools import partial
 
-import empyrical as ep
+from .. import empyrical as ep
 import numpy as np
 import pandas as pd
 import scipy as sp
 import scipy.stats as stats
 from sklearn import linear_model
 
-from .deprecate import deprecated
 from .interesting_periods import PERIODS
 from .txn import get_turnover
 from .utils import APPROX_BDAYS_PER_MONTH, APPROX_BDAYS_PER_YEAR
-from .utils import DAILY
 
 
 def var_cov_var_normal(P, c, mu=0, sigma=1):

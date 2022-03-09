@@ -7,8 +7,8 @@ import numpy as np
 import pandas as pd
 from IPython.display import display, HTML
 from distutils.version import StrictVersion
-import empyrical.utils
 
+from cx_pyfolio.empyrical.stats import simple_returns
 from . import pos
 from . import txn
 
@@ -439,7 +439,7 @@ def to_series(df):
 
 # This functions is simply a passthrough to empyrical, but is
 # required by the register_returns_func and get_symbol_rets.
-default_returns_func = empyrical.stats.simple_returns
+default_returns_func = simple_returns
 
 # Settings dict to store functions/values that may
 # need to be overridden depending on the users environment

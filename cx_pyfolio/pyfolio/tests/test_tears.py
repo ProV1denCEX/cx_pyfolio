@@ -8,8 +8,8 @@ import gzip
 
 from pandas import read_csv
 
-from pyfolio.utils import to_utc, to_series
-from pyfolio.tears import (
+from cx_pyfolio.pyfolio.utils import to_utc, to_series
+from cx_pyfolio.pyfolio.tears import (
     create_full_tear_sheet,
     create_simple_tear_sheet,
     create_returns_tear_sheet,

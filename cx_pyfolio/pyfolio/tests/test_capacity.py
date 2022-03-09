@@ -5,7 +5,7 @@ import pandas as pd
 
 from pandas.testing import assert_frame_equal, assert_series_equal
 
-from pyfolio.capacity import (
+from cx_pyfolio.pyfolio.capacity import (
     days_to_liquidate_positions,
     get_max_days_to_liquidate_by_ticker,
     get_low_liquidity_transactions,

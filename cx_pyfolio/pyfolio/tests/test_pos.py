@@ -15,14 +15,14 @@ from numpy import (
 
 import warnings
 
-from pyfolio.utils import (
+from cx_pyfolio.pyfolio.utils import (
     to_utc,
     to_series,
     check_intraday,
     detect_intraday,
     estimate_intraday,
 )
-from pyfolio.pos import (
+from cx_pyfolio.pyfolio.pos import (
     get_percent_alloc,
     extract_pos,
     get_sector_exposures,

@@ -1,7 +1,7 @@
 import warnings
 from time import time
 
-import empyrical as ep
+from .. import empyrical as ep
 from IPython.display import display, Markdown
 import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt

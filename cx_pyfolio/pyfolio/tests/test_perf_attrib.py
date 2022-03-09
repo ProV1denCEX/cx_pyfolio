@@ -3,8 +3,8 @@ import pandas as pd
 import unittest
 import warnings
 
-import empyrical as ep
-from pyfolio.perf_attrib import (
+from cx_pyfolio import empyrical as ep
+from cx_pyfolio.pyfolio.perf_attrib import (
     perf_attrib,
     create_perf_attrib_stats,
     _cumulative_returns_less_costs,

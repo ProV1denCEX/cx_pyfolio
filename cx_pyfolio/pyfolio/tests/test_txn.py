@@ -4,7 +4,7 @@ import pandas as pd
 
 from pandas.testing import assert_series_equal
 
-from pyfolio.txn import get_turnover, adjust_returns_for_slippage
+from cx_pyfolio.pyfolio.txn import get_turnover, adjust_returns_for_slippage
 
 
 class TransactionsTestCase(TestCase):

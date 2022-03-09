@@ -1,7 +1,7 @@
 import warnings
 
 from collections import OrderedDict
-import empyrical as ep
+from .. import empyrical as ep
 import pandas as pd
 import matplotlib.pyplot as plt
 
