@@ -9,13 +9,6 @@ import pandas as pd
 from numpy.lib.stride_tricks import as_strided
 from pandas.tseries.offsets import BDay
 
-try:
-    from pandas_datareader import data as web
-except ImportError:
-    msg = ("Unable to import pandas_datareader. Suppressing import error and "
-           "continuing. All data reading functionality will raise errors; but "
-           "has been deprecated and will be removed in a later version.")
-    warnings.warn(msg)
 
 try:
     # fast versions
@@ -240,17 +233,17 @@ def get_fama_french():
     """
 
     start = '1/1/1970'
-    research_factors = web.DataReader('F-F_Research_Data_Factors_daily',
-                                      'famafrench', start=start)[0]
-    momentum_factor = web.DataReader('F-F_Momentum_Factor_daily',
-                                     'famafrench', start=start)[0]
-    five_factors = research_factors.join(momentum_factor).dropna()
-    five_factors /= 100.
-    five_factors.index = five_factors.index.tz_localize('utc')
-
-    five_factors.columns = five_factors.columns.str.strip()
-
-    return five_factors
+    # research_factors = web.DataReader('F-F_Research_Data_Factors_daily',
+    #                                   'famafrench', start=start)[0]
+    # momentum_factor = web.DataReader('F-F_Momentum_Factor_daily',
+    #                                  'famafrench', start=start)[0]
+    # five_factors = research_factors.join(momentum_factor).dropna()
+    # five_factors /= 100.
+    # five_factors.index = five_factors.index.tz_localize('utc')
+    #
+    # five_factors.columns = five_factors.columns.str.strip()
+    #
+    # return five_factors
 
 
 def get_returns_cached(filepath, update_func, latest_dt, **kwargs):
@@ -374,12 +367,12 @@ def get_treasury_yield(start=None, end=None, period='3MO'):
     if end is None:
         end = _1_bday_ago()
 
-    treasury = web.DataReader("DGS3{}".format(period), "fred",
-                              start, end)
+    # treasury = web.DataReader("DGS3{}".format(period), "fred",
+    #                           start, end)
 
-    treasury = treasury.ffill()
+    # treasury = treasury.ffill()
 
-    return treasury
+    # return treasury
 
 
 def rolling_window(array, length, mutable=False):

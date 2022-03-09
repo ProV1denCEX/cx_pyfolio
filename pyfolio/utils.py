@@ -439,7 +439,7 @@ def to_series(df):
 
 # This functions is simply a passthrough to empyrical, but is
 # required by the register_returns_func and get_symbol_rets.
-default_returns_func = empyrical.utils.default_returns_func
+default_returns_func = empyrical.stats.simple_returns
 
 # Settings dict to store functions/values that may
 # need to be overridden depending on the users environment
