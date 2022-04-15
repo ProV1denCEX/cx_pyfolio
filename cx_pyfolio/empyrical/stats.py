@@ -379,7 +379,7 @@ def max_drawdown(returns, out=None):
         dtype='float64',
     )
     cumulative[0] = start = 100
-    cum_returns(returns_array, starting_value=start, out=cumulative[1:])
+    cumulative = cum_returns(returns_array, starting_value=start)
 
     max_return = np.fmax.accumulate(cumulative, axis=0)
 
