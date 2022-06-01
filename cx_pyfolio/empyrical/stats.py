@@ -383,7 +383,7 @@ def max_drawdown(returns, out=None):
 
     max_return = np.fmax.accumulate(cumulative, axis=0)
 
-    nanmin((cumulative - max_return) / max_return, axis=0, out=out)
+    nanmin((cumulative - max_return) / start, axis=0, out=out)
     if returns_1d:
         out = out.item()
     elif allocated_output and isinstance(returns, pd.DataFrame):
