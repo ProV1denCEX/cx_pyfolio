@@ -432,9 +432,9 @@ def annual_return(returns, period=DAILY, annualization=None):
     ann_factor = annualization_factor(period, annualization)
     num_years = len(returns) / ann_factor
     # Pass array to ensure index -1 looks up successfully.
-    ending_value = cum_returns_final(returns, starting_value=1)
+    ending_value = cum_returns_final(returns)
 
-    return ending_value / num_years - 1
+    return ending_value / num_years
 
 
 def cagr(returns, period=DAILY, annualization=None):
