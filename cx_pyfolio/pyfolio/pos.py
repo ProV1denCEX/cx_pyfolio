@@ -2,11 +2,6 @@ import pandas as pd
 import numpy as np
 import warnings
 
-warnings.warn(
-    'Module "zipline.assets" not found; multipliers will not be applied'
-    " to position notionals."
-)
-
 
 def get_percent_alloc(values):
     """

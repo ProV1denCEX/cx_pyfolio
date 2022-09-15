@@ -336,17 +336,23 @@ def perf_stats(
     pd.Series
         Performance metrics.
     """
+    daily_returns, annualization = get_daily_returns(returns)
 
     stats = pd.Series()
     for stat_func in SIMPLE_STAT_FUNCS:
-        stats[STAT_FUNC_NAMES[stat_func.__name__]] = stat_func(returns)
+        try:
+            stats[STAT_FUNC_NAMES[stat_func.__name__]] = stat_func(daily_returns,
+                                                                   annualization=annualization)
+
+        except TypeError:
+            stats[STAT_FUNC_NAMES[stat_func.__name__]] = stat_func(daily_returns)
 
     if positions is not None:
-        stats["Gross leverage"] = gross_lev(positions).mean()
+        stats['Gross leverage'] = gross_lev(positions).mean()
         if transactions is not None:
-            stats["Daily turnover"] = get_turnover(
-                positions, transactions, turnover_denom
-            ).mean()
+            stats['Daily turnover'] = get_turnover(positions,
+                                                   transactions,
+                                                   turnover_denom).mean()
     if factor_returns is not None:
         for stat_func in FACTOR_STAT_FUNCS:
             res = stat_func(returns, factor_returns)
@@ -867,3 +873,11 @@ def extract_interesting_date_ranges(returns, periods=None):
             continue
 
     return ranges
+
+def get_daily_returns(returns):
+    daily_returns = returns.reset_index()
+    daily_returns.loc[:, 'DateTime'] = pd.to_datetime(daily_returns.loc[:, 'DateTime'].dt.date)
+    daily_returns = daily_returns.groupby('DateTime').sum()
+    daily_returns = daily_returns.iloc[:, 0]
+
+    return daily_returns, 252
